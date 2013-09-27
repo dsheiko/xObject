@@ -1,5 +1,5 @@
 {
-  "name": "xObject",
+  "name": "xobject",
   "title": "A lightweight hookable factory providing control over object instantiation",
   "description": "Allows to turn your object constructors into classes extendable by this tiny factory. The factory is plugin-able and can enable interfaces, mixins and design by contract support to you pseudo-classes.",
   "version": "3.0.0",
