@@ -1,6 +1,7 @@
 # xObject
-
+[![Build Status](https://travis-ci.org/dsheiko/xObject.png)](https://travis-ci.org/dsheiko/xObject)
 > A lightweight hookable factory providing control over object instantiation.
+
 
 ## Grounds
 
@@ -92,7 +93,7 @@ assert.strictEqual( obj.foo, 'foo' );
 ### Using __mixin__ pseudo-property
 
 ```javascript
-MixinA = {
+var MixinA = {
     propertyA: "propertyA"
 };
 MixinB = {
@@ -119,14 +120,14 @@ assert.strictEqual( o.propertyB, "propertyB" );
 ```javascript
 
 
-InjectedDependency = function() {
+var InjectedDependency = function() {
   return {
   };
-};
+},
 
 ConcreteInterface = {
   requeriedMethod : ["string", InjectedDependency]
-};
+},
 
 StrictModule = function() {
   return {
@@ -151,7 +152,7 @@ module.requeriedMethod("a string", {}); // throws a TypeError exception
 ### Design by Contract
 
 ```javascript
-ConcreteContract = {
+var ConcreteContract = {
     aMethod : {
         onEntry: [ "number"],
         validators: [function(arg){
@@ -159,7 +160,7 @@ ConcreteContract = {
         }],
         onExit: "string"
     }
-};
+},
 EmployedModule = function() {
     return {
         __contract__: ConcreteContract,
