@@ -4,17 +4,17 @@
   "version": "3.0.0",
   "author": "Dmitry Sheiko",
   "description": "Allows to turn your object constructors into classes extendable by this tiny factory. The factory is plugin-able and can enable interfaces, mixins and design by contract support to you pseudo-classes.",
-  "homepage": "http://code.google.com/p/jquery-jsa/",
+  "homepage": "https://github.com/dsheiko/xObject",
   "licenses": [
    {
        "type": "MIT",
        "url": "http://opensource.org/licenses/mit-license.php"
    }],
   "repository": {
-    "type": "googlecode",
-    "url": "http://code.google.com/p/jquery-jsa/"
+    "type": "github",
+    "url": "https://github.com/dsheiko/xObject"
   },
-  "main": "./src/jsa.js",
+  "main": "./js/source/xObject.core.js",
   "dependencies": {
   },
   "devDependencies": {
