@@ -1,5 +1,6 @@
 # xObject
 [![Build Status](https://travis-ci.org/dsheiko/xObject.png)](https://travis-ci.org/dsheiko/xObject)
+[![NPM version](https://badge.fury.io/js/xObject.png)](http://badge.fury.io/js/xObject)
 > A lightweight hookable factory providing control over object instantiation.
 
 
@@ -208,7 +209,7 @@ When xObject.create instantiates a derivative of  xObject.WidgetAbstract it popu
       };
     };
     // Document is ready
-    $(document).bind( 'ready.app', function(){
+    $(document).bind( 'ready.app', function(){t
       xObject.create( Intro, { boundingBox: "#intro" } );
     });
 
