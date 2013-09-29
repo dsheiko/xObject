@@ -1,19 +1,34 @@
 {
-  "name": "xObject",
+  "name": "xobject",
   "title": "A lightweight hookable factory providing control over object instantiation",
-  "version": "3.0.0",
-  "author": "Dmitry Sheiko",
   "description": "Allows to turn your object constructors into classes extendable by this tiny factory. The factory is plugin-able and can enable interfaces, mixins and design by contract support to you pseudo-classes.",
+  "version": "3.0.0",
+  "author": {
+        "name": "Dmitry Sheiko",
+        "url": "http://dsheiko.com"
+  },
+ 
   "homepage": "https://github.com/dsheiko/xObject",
+  "scripts": {
+      "test": "grunt test"
+  },
   "licenses": [
-   {
-       "type": "MIT",
-       "url": "http://opensource.org/licenses/mit-license.php"
-   }],
+    {
+        "type": "MIT",
+        "url": "http://github.com/fawek/codepainter/raw/master/LICENSE"
+    }
+  ],
   "repository": {
     "type": "github",
     "url": "https://github.com/dsheiko/xObject"
   },
+  "maintainers": [
+    {
+        "name": "Dmitry Sheiko",
+        "email": "me@dsheiko.com",
+        "web": "http://dsheiko.com"
+    }
+  ], 
   "main": "./js/source/xObject.core.js",
   "dependencies": {
   },

@@ -1,20 +1,24 @@
 # xObject
 [![Build Status](https://travis-ci.org/dsheiko/xObject.png)](https://travis-ci.org/dsheiko/xObject)
+[![NPM version](https://badge.fury.io/js/xobject.png)](http://badge.fury.io/js/xobject)
 > A lightweight hookable factory providing control over object instantiation.
 
 
 ## Grounds
 
 As a developer I want to follow 'Constructor that returns Object Literal' pattern while declaring objects as
-that is the best maintainable design available for JavaScript (prior to ES Harmony) in my opinion.
-However that structure doesn't allow any easy way to inherit.  As soon as I realised that I can get control over object instantiation via a factory I came up with this library.
+[in my opinion](http://dsheiko.com/weblog/js-application-design/) it is the best maintainable design available for JavaScript (prior to ES Harmony).
+However that structure doesn't allow any easy way to inherit.  As soon as I realised that I can get control over object instantiation via a factory and thus implement a custom inheritance I came up with this library. It was firstly released in 2010 as JSA. Recently the library was refactored and the factory API is changed. Since the factory makes an alternative to Object.create method, it was named xObject.create.
 
 ## Features
-Core: Class-based descending inheritance (abstract class -> class -> .. -> final class)
-Mixin hook: Multiple inheritance by using mixins
-Interface hook: Interface annotation and run-time validation
-DbC hook: Design by Contract practices: entry/exit point validators
-Widget hook: YUI-like Widget foundation class
+* Core: Class-based descending inheritance (abstract class -> class -> .. -> final class)
+* Mixin hook: Multiple inheritance by using mixins
+* Interface hook: Interface annotation and run-time validation
+* DbC hook: Design by Contract practices: entry/exit point validators
+* Widget hook: YUI-like Widget foundation class
+
+![UML](https://github.com/dsheiko/xObject/raw/master/doc/uml-overview.png)
+
 
 ## Exampes
 
@@ -81,7 +85,7 @@ var ConcreteClass = function() {
   assert.strictEqual( obj.arg2, 2 );
 ```
 
-### Importing properties almost like Object.create
+### Importing properties in Object.create way
 
 ```javascript
 var ConcreteClass = function() {};
@@ -111,8 +115,6 @@ assert.strictEqual( o.ownPropery, "Own property" );
 assert.strictEqual( o.propertyA, "propertyA" );
 assert.strictEqual( o.propertyB, "propertyB" );
 ```
-
-
 
 
 ### Using __implements__ pseudo-property
@@ -170,12 +172,23 @@ EmployedModule = function() {
     }
 };
 var module = EmployedModule.createInstance();
-module.aMethod(50); // OK
-module.aMethod(1); // validator fails, RangeError exception is thrown
+module.aMethod( 50 ); // OK
+module.aMethod( 1 ); // validator fails, RangeError exception is thrown
 
 ```
 
 ### Extending WidgetAbstract
+
+YUI provides a [sophisticated solution](http://yuilibrary.com/yui/docs/widget/) for keeping Widget objects consistent. xObject borrowed the concepts of base xObject.WidgetAbstract type from which all the Widget objects derived.
+
+A Widget object extending xObject.WidgetAbstract may any of following members:
+﻿
+* HTML_PARSER - object literal mapping this.node properties to supplied selectors. E.g { title: "#title" } obtains reference to a node of id "title" (in the context of boundingBox) and exposes it in this.node.title.
+* renderUi - method responsible for creating and adding the nodes which the widget needs into the document 
+* bindUi - method responsible for attaching event listeners which bind the UI to the widget state. 
+* syncUI - method responsible for setting the initial state of the UI based on the current state of the widget at the time of rendering.
+
+When xObject.create instantiates a derivative of  xObject.WidgetAbstract it populates node property with node references given in HTML_PARSER and call init, renderUi, bindUi and syncUi methods when any available.
 
 ```javascript
 (function( $, xObject ) {
@@ -196,7 +209,7 @@ module.aMethod(1); // validator fails, RangeError exception is thrown
       };
     };
     // Document is ready
-    $(document).bind( 'ready.app', function(){
+    $(document).bind( 'ready.app', function(){t
       xObject.create( Intro, { boundingBox: "#intro" } );
     });
 
@@ -204,6 +217,6 @@ module.aMethod(1); // validator fails, RangeError exception is thrown
 
 ```
 
-AbstractWidget obtain nodes from DOM by supplied selector strings by using xObject.querySelectorFn( selector[, context] ) function, which you can override.
+*Note:*  AbstractWidget obtain nodes from DOM by supplied selector strings by using xObject.querySelectorFn( selector[, context] ) function, which you can override.
 When it's not overridden, by default it will rely on VanillaJS querySelector method, but if jQuery available in the global scope it will switch to $().
 
