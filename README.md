@@ -184,8 +184,8 @@ YUI provides a [sophisticated solution](http://yuilibrary.com/yui/docs/widget/) 
 A Widget object extending xObject.WidgetAbstract may any of following members:
 ﻿
 * HTML_PARSER - object literal mapping this.node properties to supplied selectors. E.g { title: "#title" } obtains reference to a node of id "title" (in the context of boundingBox) and exposes it in this.node.title.
-* renderUi - method responsible for creating and adding the nodes which the widget needs into the document 
-* bindUi - method responsible for attaching event listeners which bind the UI to the widget state. 
+* renderUi - method responsible for creating and adding the nodes which the widget needs into the document
+* bindUi - method responsible for attaching event listeners which bind the UI to the widget state.
 * syncUI - method responsible for setting the initial state of the UI based on the current state of the widget at the time of rendering.
 
 When xObject.create instantiates a derivative of  xObject.WidgetAbstract it populates node property with node references given in HTML_PARSER and call init, renderUi, bindUi and syncUi methods when any available.
@@ -196,7 +196,7 @@ When xObject.create instantiates a derivative of  xObject.WidgetAbstract it popu
     //  Concrete widget
     Intro = function() {
       return {
-        __extends__ : jsa.WidgetAbstract,
+        __extends__ : xObject.WidgetAbstract,
         HTML_PARSER : {
           toolbar : 'div.toolbar'
         },
