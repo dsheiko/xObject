@@ -1,6 +1,7 @@
 # xObject
 [![Build Status](https://travis-ci.org/dsheiko/xObject.png)](https://travis-ci.org/dsheiko/xObject)
 [![NPM version](https://badge.fury.io/js/xobject.png)](http://badge.fury.io/js/xobject)
+[![Get it with Bower](//benschwarz.github.io/bower-badges/badge@2x.png)](http://bower.io/)
 > A lightweight hookable factory providing control over object instantiation.
 
 
