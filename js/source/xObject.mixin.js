@@ -33,23 +33,23 @@
 */
 
 (function( global ) {
-    "use strict";
-    var xObject = global.xObject || {};
+	"use strict";
+	var xObject = global.xObject || {};
 
-    xObject.hooks = xObject.hooks || [];
-    /**
-     * Hook handler
-     * @param {object} instace
-     * @param {array} args
-     */
-    xObject.hooks.push(function( instance, args ) {
-      if ( instance.__mixin__ && xObject.isArray( instance.__mixin__ ) ) {
-        for (var i = 0, len = instance.__mixin__.length; i < len; i++ ) {
-          var trait = instance.__mixin__[ i ];
-          xObject.mixin( instance, trait );
-        }
-      }
-    });
+	xObject.hooks = xObject.hooks || [];
+	/**
+		* Hook handler
+		* @param {object} instace
+		* @param {array} args
+		*/
+	xObject.hooks.push(function( instance, args ) {
+		if ( instance.__mixin__ && xObject.isArray( instance.__mixin__ ) ) {
+		for (var i = 0, len = instance.__mixin__.length; i < len; i++ ) {
+			var trait = instance.__mixin__[ i ];
+			xObject.mixin( instance, trait );
+		}
+		}
+	});
 
-    return xObject;
+	return xObject;
 }( this ));

@@ -7,7 +7,7 @@
         "name": "Dmitry Sheiko",
         "url": "http://dsheiko.com"
   },
- 
+
   "homepage": "https://github.com/dsheiko/xObject",
   "scripts": {
       "test": "grunt test"
@@ -28,7 +28,7 @@
         "email": "me@dsheiko.com",
         "web": "http://dsheiko.com"
     }
-  ], 
+  ],
   "main": "./js/source/xObject.core.js",
   "dependencies": {
   },
@@ -37,8 +37,7 @@
       "grunt-contrib-jshint": "~0.4.3",
       "grunt-contrib-qunit": "~0.2.1",
       "qunitjs": "1.x",
-      "jscodesniffer": ">= 1.1.2",
-      "grunt-contrib-jscs": ">= 0.1",
+      "grunt-contrib-jscs": ">= 0.1.2",
       "uglify-js": ">= 2.0.0",
       "grunt-contrib-uglify": ">=0.1"
   }
