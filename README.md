@@ -221,3 +221,4 @@ When xObject.create instantiates a derivative of  xObject.WidgetAbstract it popu
 *Note:*  AbstractWidget obtain nodes from DOM by supplied selector strings by using xObject.querySelectorFn( selector[, context] ) function, which you can override.
 When it's not overridden, by default it will rely on VanillaJS querySelector method, but if jQuery available in the global scope it will switch to $().
 
+[![githalytics.com alpha](https://cruel-carlota.pagodabox.com/468ace1d50bb1ed3cc329d0e1261dde0 "githalytics.com")](http://githalytics.com/dsheiko/xObject)
