@@ -1,9 +1,11 @@
 # xObject
+
+[![NPM](https://nodei.co/npm/xobject.png)](https://nodei.co/npm/xobject/)
+
 [![Build Status](https://travis-ci.org/dsheiko/xObject.png)](https://travis-ci.org/dsheiko/xObject)
-[![NPM version](https://badge.fury.io/js/xobject.png)](http://badge.fury.io/js/xobject)
+[![Bower version](https://badge.fury.io/bo/xobject.svg)](http://badge.fury.io/bo/xobject)
 
 > A lightweight hookable factory providing control over object instantiation.
-
 
 ## Grounds
 

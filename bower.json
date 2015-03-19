@@ -12,7 +12,6 @@
   "authors": [
     "Dmitry Sheiko (http://dsheiko.com)"
   ],
-
   "homepage": "https://github.com/dsheiko/xObject",
   "repository": {
     "type": "github",
@@ -20,14 +19,13 @@
   },
   "main": "./js/source/xObject.core.js",
   "devDependencies": {
-      "grunt": "~0.4.1",
-      "grunt-contrib-jshint": "~0.4.3",
-      "grunt-contrib-qunit": "~0.2.1",
-      "qunitjs": "1.x",
-      "jscodesniffer": ">= 1.1.2",
-      "grunt-contrib-jscs": ">= 0.1",
-      "uglify-js": ">= 2.0.0",
-      "grunt-contrib-uglify": ">=0.1"
+    "grunt": "~0.4.1",
+    "grunt-contrib-jshint": "~0.4.3",
+    "grunt-contrib-qunit": "~0.2.1",
+    "grunt-contrib-uglify": ">=0.1",
+    "grunt-jscodesniffer": ">=0.1.10",
+    "qunitjs": "1.x",
+    "uglify-js": ">= 2.0.0"
   },
   "license": "MIT",
   "ignore": [
