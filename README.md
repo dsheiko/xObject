@@ -1,5 +1,9 @@
 # xObject
 
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+
+> WARNING - THIS PROJECT IS NO LONGER MAINTAINED!!!
+
 [![NPM](https://nodei.co/npm/xobject.png)](https://nodei.co/npm/xobject/)
 
 [![Build Status](https://travis-ci.org/dsheiko/xObject.png)](https://travis-ci.org/dsheiko/xObject)
