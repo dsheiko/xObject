@@ -1,42 +1,32 @@
 {
   "name": "xobject",
-  "title": "A lightweight hookable factory providing control over object instantiation",
-  "description": "Allows to turn your object constructors into classes extendable by this tiny factory. The factory is plugin-able and can enable interfaces, mixins and design by contract support to you pseudo-classes.",
-  "version": "3.0.0",
-  "author": {
-    "name": "Dmitry Sheiko",
-    "url": "http://dsheiko.com"
-  },
+  "description": "A lightweight hookable factory providing control over object instantiation",
+  "version": "3.0.1",
+  "author": "Dmitry Sheiko <me@dsheiko.com>",
   "homepage": "https://github.com/dsheiko/xObject",
-  "scripts": {
-    "test": "grunt test"
-  },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "http://github.com/fawek/codepainter/raw/master/LICENSE"
-    }
-  ],
   "repository": {
-    "type": "github",
+    "type": "git",
     "url": "https://github.com/dsheiko/xObject"
   },
-  "maintainers": [
-    {
-      "name": "Dmitry Sheiko",
-      "email": "me@dsheiko.com",
-      "web": "http://dsheiko.com"
-    }
+  "license": "MIT",
+  "keywords": [
+    "inheritance",
+    "factory",
+    "mixins",
+    "interface",
+    "design-by-contract",
+    "oop"
   ],
+  "engines": {
+    "node": ">=14"
+  },
   "main": "./js/source/xObject.core.js",
-  "dependencies": {},
+  "scripts": {
+    "test": "jest",
+    "build": "node build.js"
+  },
   "devDependencies": {
-    "grunt": "~0.4.1",
-    "grunt-contrib-jshint": "~0.4.3",
-    "grunt-contrib-qunit": "~0.2.1",
-    "grunt-contrib-uglify": ">=0.1",
-    "grunt-jscodesniffer": ">=0.1.10",
-    "qunitjs": "1.x",
-    "uglify-js": ">= 2.0.0"
+    "jest": "^29.0.0",
+    "terser": "^5.0.0"
   }
 }

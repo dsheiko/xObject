@@ -1,0 +1,108 @@
+<svg width="820" height="380" viewBox="0 0 820 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="xObject — hookable object factory for JavaScript">
+  <title>xObject — hookable object factory for JavaScript</title>
+  <defs>
+    <linearGradient id="xo-bg" x1="0" y1="0" x2="820" y2="380" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#0b1628"/>
+    </linearGradient>
+    <linearGradient id="xo-bar" x1="0" y1="0" x2="820" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="820" height="380" rx="14" fill="url(#xo-bg)"/>
+  <!-- Top accent bar -->
+  <rect width="820" height="4" fill="url(#xo-bar)"/>
+
+  <!-- ── Title ─────────────────────────────────────────────── -->
+  <text y="64" font-family="'Courier New',Courier,monospace" font-size="48" font-weight="700">
+    <tspan x="44" fill="#818cf8">x</tspan><tspan fill="#f1f5f9">Object</tspan>
+  </text>
+  <text x="46" y="90" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="14" fill="#475569">
+    Hookable object factory · prototypal inheritance · ES5 · zero dependencies
+  </text>
+
+  <!-- Divider -->
+  <rect x="44" y="104" width="732" height="1" fill="#1e293b"/>
+
+  <!-- ── Left: code block ───────────────────────────────────── -->
+  <rect x="44" y="116" width="358" height="216" rx="8" fill="#070d1a" stroke="#1a2a44" stroke-width="1"/>
+  <!-- macOS chrome -->
+  <rect x="44" y="116" width="358" height="30" rx="8" fill="#131f35"/>
+  <rect x="44" y="132" width="358" height="14" fill="#131f35"/>
+  <circle cx="65"  cy="131" r="5" fill="#ff5f56" opacity=".8"/>
+  <circle cx="84"  cy="131" r="5" fill="#ffbd2e" opacity=".8"/>
+  <circle cx="103" cy="131" r="5" fill="#27c93f" opacity=".8"/>
+
+  <!-- Code (12.5px font, 19px leading, first baseline y=164) -->
+  <text y="164" font-family="'Courier New',Courier,monospace" font-size="12.5">
+    <tspan x="62" fill="#c084fc">var </tspan><tspan fill="#93c5fd">Animal</tspan><tspan fill="#94a3b8"> = </tspan><tspan fill="#c084fc">function</tspan><tspan fill="#94a3b8">() {</tspan>
+  </text>
+  <text y="183" font-family="'Courier New',Courier,monospace" font-size="12.5">
+    <tspan x="62" fill="#94a3b8">  </tspan><tspan fill="#c084fc">return </tspan><tspan fill="#94a3b8">{ </tspan><tspan fill="#93c5fd">speak</tspan><tspan fill="#94a3b8">: </tspan><tspan fill="#c084fc">function</tspan><tspan fill="#94a3b8">() {} };</tspan>
+  </text>
+  <text x="62" y="202" font-family="'Courier New',Courier,monospace" font-size="12.5" fill="#94a3b8">};</text>
+
+  <text y="224" font-family="'Courier New',Courier,monospace" font-size="12.5">
+    <tspan x="62" fill="#c084fc">var </tspan><tspan fill="#93c5fd">Dog</tspan><tspan fill="#94a3b8"> = </tspan><tspan fill="#c084fc">function</tspan><tspan fill="#94a3b8">() {</tspan>
+  </text>
+  <text y="243" font-family="'Courier New',Courier,monospace" font-size="12.5">
+    <tspan x="62" fill="#94a3b8">  </tspan><tspan fill="#c084fc">return </tspan><tspan fill="#94a3b8">{ </tspan><tspan fill="#fbbf24">__extends__</tspan><tspan fill="#94a3b8">: </tspan><tspan fill="#93c5fd">Animal</tspan><tspan fill="#94a3b8">,</tspan>
+  </text>
+  <text y="262" font-family="'Courier New',Courier,monospace" font-size="12.5">
+    <tspan x="62" fill="#94a3b8">    </tspan><tspan fill="#fbbf24">__mixin__</tspan><tspan fill="#94a3b8">: [</tspan><tspan fill="#93c5fd">Fetcher</tspan><tspan fill="#94a3b8">] };</tspan>
+  </text>
+  <text x="62" y="281" font-family="'Courier New',Courier,monospace" font-size="12.5" fill="#94a3b8">};</text>
+
+  <text y="305" font-family="'Courier New',Courier,monospace" font-size="12.5">
+    <tspan x="62" fill="#c084fc">var </tspan><tspan fill="#93c5fd">rex</tspan><tspan fill="#94a3b8"> = </tspan><tspan fill="#93c5fd">xObject</tspan><tspan fill="#94a3b8">.</tspan><tspan fill="#34d399">create</tspan><tspan fill="#94a3b8">(</tspan><tspan fill="#93c5fd">Dog</tspan><tspan fill="#94a3b8">);</tspan>
+  </text>
+  <text y="322" font-family="'Courier New',Courier,monospace" font-size="12.5">
+    <tspan x="62" fill="#93c5fd">rex</tspan><tspan fill="#94a3b8"> </tspan><tspan fill="#c084fc">instanceof</tspan><tspan fill="#94a3b8"> </tspan><tspan fill="#93c5fd">Animal</tspan><tspan fill="#94a3b8">;  </tspan><tspan fill="#22c55e">// ✓</tspan>
+  </text>
+
+  <!-- ── Right: feature cards ───────────────────────────────── -->
+  <!-- layout: x=434, two cols of w=164 with 10px gap, rows h=62 with 8px gap -->
+  <!-- row 1 y=116, row 2 y=186, row 3 y=256 h=76 (widget, full-width 338px) -->
+
+  <!-- Row 1 — Core Inheritance -->
+  <rect x="434" y="116" width="164" height="62" rx="7" fill="#0d1c35" stroke="#1c334f" stroke-width="1"/>
+  <rect x="434" y="116" width="4"   height="62" rx="2" fill="#6366f1"/>
+  <text x="448" y="137" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="600" fill="#c7d2fe">Core Inheritance</text>
+  <text x="448" y="154" font-family="'Courier New',Courier,monospace" font-size="11" fill="#64748b">__extends__</text>
+  <text x="448" y="169" font-family="-apple-system,sans-serif" font-size="10.5" fill="#475569">single + multi-level</text>
+
+  <!-- Row 1 — Mixins -->
+  <rect x="608" y="116" width="164" height="62" rx="7" fill="#0d1c35" stroke="#1c334f" stroke-width="1"/>
+  <rect x="608" y="116" width="4"   height="62" rx="2" fill="#8b5cf6"/>
+  <text x="622" y="137" font-family="-apple-system,sans-serif" font-size="12" font-weight="600" fill="#ddd6fe">Mixins</text>
+  <text x="622" y="154" font-family="'Courier New',Courier,monospace" font-size="11" fill="#64748b">__mixin__</text>
+  <text x="622" y="169" font-family="-apple-system,sans-serif" font-size="10.5" fill="#475569">multiple inheritance</text>
+
+  <!-- Row 2 — Interface -->
+  <rect x="434" y="186" width="164" height="62" rx="7" fill="#0d1c35" stroke="#1c334f" stroke-width="1"/>
+  <rect x="434" y="186" width="4"   height="62" rx="2" fill="#06b6d4"/>
+  <text x="448" y="207" font-family="-apple-system,sans-serif" font-size="12" font-weight="600" fill="#a5f3fc">Interface</text>
+  <text x="448" y="224" font-family="'Courier New',Courier,monospace" font-size="11" fill="#64748b">__implements__</text>
+  <text x="448" y="239" font-family="-apple-system,sans-serif" font-size="10.5" fill="#475569">runtime type checks</text>
+
+  <!-- Row 2 — Design by Contract -->
+  <rect x="608" y="186" width="164" height="62" rx="7" fill="#0d1c35" stroke="#1c334f" stroke-width="1"/>
+  <rect x="608" y="186" width="4"   height="62" rx="2" fill="#f59e0b"/>
+  <text x="622" y="207" font-family="-apple-system,sans-serif" font-size="12" font-weight="600" fill="#fde68a">Design by Contract</text>
+  <text x="622" y="224" font-family="'Courier New',Courier,monospace" font-size="11" fill="#64748b">__contract__</text>
+  <text x="622" y="239" font-family="-apple-system,sans-serif" font-size="10.5" fill="#475569">entry · validators · exit</text>
+
+  <!-- Row 3 — Widget Lifecycle (full width) -->
+  <rect x="434" y="256" width="338" height="76" rx="7" fill="#0d1c35" stroke="#1c334f" stroke-width="1"/>
+  <rect x="434" y="256" width="4"   height="76" rx="2" fill="#22c55e"/>
+  <text x="448" y="278" font-family="-apple-system,sans-serif" font-size="12" font-weight="600" fill="#bbf7d0">Widget Lifecycle</text>
+  <text x="448" y="295" font-family="'Courier New',Courier,monospace" font-size="11" fill="#64748b">__extends__: xObject.WidgetAbstract</text>
+  <text x="448" y="312" font-family="-apple-system,sans-serif" font-size="10.5" fill="#475569">init  →  renderUi  →  bindUi  →  syncUi</text>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <text x="44" y="360" font-family="'Courier New',Courier,monospace" font-size="11.5" fill="#1e3a5f">xObject.create( constructor [, args] [, props] )</text>
+  <text x="772" y="360" text-anchor="end" font-family="-apple-system,sans-serif" font-size="11" fill="#1e3a5f">MIT License</text>
+</svg>

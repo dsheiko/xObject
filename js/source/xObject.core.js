@@ -150,7 +150,7 @@
 			throw new TypeError("Invalid type argument '" + typeof arguments[ 0 ] +
 					"'. Here expected either function (constructor) or object (proto)");
 		}
-		if ( arguments.length === 2 && xObject.isArray( arguments[ 1 ] ) && typeof arguments[ 1 ] !== "object") {
+		if ( arguments.length === 2 && !xObject.isArray( arguments[ 1 ] ) && typeof arguments[ 1 ] !== "object") {
 			throw new TypeError("Invalid type argument '" + typeof arguments[ 1 ] +
 				"'. Here expected either arguments array or properties object");
 		}

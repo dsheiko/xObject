@@ -66,7 +66,7 @@
 		* @param {array} args
 		*/
 	xObject.hooks.push(function ( instance ) {
-		var i = 0;
+		var i;
 		if ( instance instanceof xObject.WidgetAbstract === false ) {
 			return;
 		}

@@ -25,63 +25,51 @@
 * };
 *
 * App.ConcreteInterface = {
-*   requeriedMethod : ["string", App.InjectedDependency]
+*   requiredMethod : ["string", App.InjectedDependency]
 * };
 *
 * App.StrictModule = function() {
 *   return {
 *      __implements__: App.ConcreteInterface,
-*      requeriedMethod : function() {}
+*      requiredMethod : function() {}
 *   }
 * };
 *
-* xObject.create( App.ViolatingModule ); -> SyntaxType exception
+* xObject.create( App.ViolatingModule ); -> SyntaxError exception
 * var dependency = xObject.create( App.InjectedDependency ),
 *     module = xObject.create( App.StrictModule );
 *
-* module.requeriedMethod("a string", dependency); -> OK
-* module.requeriedMethod(555, dependency); -> TypeError exception
-* module.requeriedMethod("a string", {}); -> TypeError exception
+* module.requiredMethod("a string", dependency); -> OK
+* module.requiredMethod(555, dependency); -> TypeError exception
+* module.requiredMethod("a string", {}); -> TypeError exception
 *
 * @package xObject.Interface
 * @author sheiko
 * @license MIT
 * @copyright (c) Dmitry Sheiko http://www.dsheiko.com
-* @jscs standard:Jquery
-* Code style: http://docs.jquery.com/JQuery_Core_Style_Guidelines
 */
 
 (function( global, undefined ) {
 	"use strict";
-	global.jsa = global.jsa || {};
-	/**
-		* Extends object factory with interface support
-		*
-		* @example
-		* var ConcreteInterface = {
-		*    methodA : ["string", MyObject]
-		* }
-		* Allowed types:
-		* 'boolean', 'number', 'string', 'array', 'function', Class-object
-		*/
-	global.jsa.Hook = global.jsa.Hook || [];
+	var xObject = global.xObject || {};
+
+	xObject.hooks = xObject.hooks || [];
 	/**
 		* Hook handler
-		* @param {object} instace
+		* @param {object} instance
 		* @param {array} args
 		*/
-	global.jsa.Hook.push(function( instance, args ) {
+	xObject.hooks.push(function( instance, args ) {
 		/**
 			* @param {*} arg
-			* @param {*} typeHint  can be type or object
+			* @param {*} typeHint  can be a primitive type string or a constructor
 			*/
 		var matchArgTypeHint = function( arg, typeHint ) {
-				if (typeof(typeHint) === "string") {
-					if ( typeHint in {
-						"string": null, "number": null, "boolean": null, "function": null } ) {
+				if ( typeof typeHint === "string" ) {
+					if ( typeHint in { "string": null, "number": null, "boolean": null, "function": null } ) {
 						return typeof arg === typeHint;
 					} else if ( typeHint === "array" ) {
-						return global.jsa.isArray ( arg );
+						return xObject.isArray( arg );
 					} else {
 						throw new SyntaxError( "Invalid type hint '" +
 							typeHint + "'. Type hint can be a string ('string', 'number', 'boolean', 'array') or an object." );
@@ -89,11 +77,10 @@
 				} else {
 					return arg instanceof typeHint;
 				}
-				return true;
 			},
 			/**
 				* @param {string} method
-				* @param {object} contract
+				* @param {array} methodInterface
 				* @param {object} instance
 				*/
 			overrideMethod = function( method, methodInterface, instance ) {
@@ -101,20 +88,20 @@
 				instance[ method ] = function() {
 					for ( var i = 0, len = arguments.length; i < len; i++ ) {
 						if ( arguments[ i ] && methodInterface[ i ] &&
-							!matchArgTypeHint( arguments[ i ], methodInterface[ i ])) {
+							!matchArgTypeHint( arguments[ i ], methodInterface[ i ] ) ) {
 							throw new TypeError(
 								"Argument #" + ( parseInt( i, 10 ) + 1 ) + " of method '" + method + "' " +
-									(typeof methodInterface[ i ] === "string" ?
+									( typeof methodInterface[ i ] === "string" ?
 									"is required to be a '" + methodInterface[ i ] + "'" :
-									" violates the implemented interface") );
+									" violates the implemented interface" ) );
 						}
 					}
 					return origFn.apply( instance, arguments );
 				};
-		};
-		// Interface is an object, specified in __implements__ property, of the following structure
+			};
+		// Interface is an object specified in __implements__ of the form:
 		// { "methodA" : ["string", MyObject], .. }
-		if ( instance.hasOwnProperty( "__implements__" ) && instance.__implements__ ) {
+		if ( instance.__implements__ ) {
 			for ( var prop in instance.__implements__ ) {
 				if ( instance.__implements__.hasOwnProperty( prop ) ) {
 					if ( instance[ prop ] !== undefined ) {

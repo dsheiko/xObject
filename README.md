@@ -1,230 +1,223 @@
 # xObject
 
-[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
-
-> WARNING - THIS PROJECT IS NO LONGER MAINTAINED!!!
+![xObject promo](doc/promo.svg)
 
 [![NPM](https://nodei.co/npm/xobject.png)](https://nodei.co/npm/xobject/)
 
-[![Build Status](https://travis-ci.org/dsheiko/xObject.png)](https://travis-ci.org/dsheiko/xObject)
-[![Bower version](https://badge.fury.io/bo/xobject.svg)](http://badge.fury.io/bo/xobject)
-
 > A lightweight hookable factory providing control over object instantiation.
 
-## Grounds
+xObject lets you use the "constructor that returns an object literal" pattern while still getting proper class-based inheritance, mixins, interface validation, and design-by-contract support.
 
-As a developer I want to follow 'Constructor that returns Object Literal' pattern while declaring objects as
-[in my opinion](http://dsheiko.com/weblog/js-application-design/) it is the best maintainable design available for JavaScript (prior to ES Harmony).
-However that structure doesn't allow any easy way to inherit.  As soon as I realised that I can get control over object instantiation via a factory and thus implement a custom inheritance I came up with this library. It was firstly released in 2010 as JSA. Recently the library was refactored and the factory API is changed. Since the factory makes an alternative to Object.create method, it was named xObject.create.
+## Install
+
+```
+npm install xobject
+```
 
 ## Features
-* Core: Class-based descending inheritance (abstract class -> class -> .. -> final class)
-* Mixin hook: Multiple inheritance by using mixins
-* Interface hook: Interface annotation and run-time validation
-* DbC hook: Design by Contract practices: entry/exit point validators
-* Widget hook: YUI-like Widget foundation class
+
+- **Core** — single-level and multi-level prototype inheritance
+- **Mixin** — multiple inheritance via `__mixin__`
+- **Interface** — runtime method signature validation via `__implements__`
+- **DbC** — design by contract (entry/exit type hints + validators) via `__contract__`
+- **Widget** — YUI-style lifecycle (`init → renderUi → bindUi → syncUi`) via `__extends__: xObject.WidgetAbstract`
 
 ![UML](https://github.com/dsheiko/xObject/raw/master/doc/uml-overview.png)
 
+## Scripts
 
-## Exampes
+```
+npm test        # run Jest test suite
+npm run build   # produce minified bundles in js/build/
+```
+
+## Examples
 
 ### Class-based descending inheritance
 
 ```javascript
-  var AbstractClass = function() {
-        return {
-          foo: "value"
-        };
-      },
-      ConcreteClass = function () {
-        // Constructor's job
-        var _privateMember = "private member";
-        return {
-            __extends__: AbstractClass
-            publicMember : "public member",
-            privilegedMethod : function () {
-                return _privateMember;
-            }
-        };
+var AbstractClass = function() {
+      return {
+        foo: "value"
       };
+    },
+    ConcreteClass = function() {
+      var _privateMember = "private member";
+      return {
+        __extends__: AbstractClass,
+        publicMember: "public member",
+        privilegedMethod: function() {
+          return _privateMember;
+        }
+      };
+    };
 
-  var obj = xObject.create( ConcreteClass );
-  assert.ok( obj instanceof ConcreteClass );
-  assert.ok( obj instanceof AbstractClass );
+var obj = xObject.create(ConcreteClass);
+obj instanceof ConcreteClass; // true
+obj instanceof AbstractClass; // true
 ```
 
 ### Passing arguments to the constructor
 
 ```javascript
-var ConcreteClass = function( arg1, arg2 ) {
+var ConcreteClass = function(arg1, arg2) {
   var _arg1 = arg1,
       _arg2 = arg2;
   return {
-      getArg1 : function () {
-          return _arg1;
-      },
-      getArg2 : function () {
-          return _arg2;
-      }
+    getArg1: function() { return _arg1; },
+    getArg2: function() { return _arg2; }
   };
 };
 
-var obj = xObject.create( ConcreteClass, [ 1, 2 ] );
-assert.strictEqual( obj.getArg1(), 1 );
-assert.strictEqual( obj.getArg2(), 2 );
+var obj = xObject.create(ConcreteClass, [1, 2]);
+obj.getArg1(); // 1
+obj.getArg2(); // 2
 ```
 
 ### Using __constructor__ pseudo-method
 
 ```javascript
 var ConcreteClass = function() {
-    return {
-        __constructor__: function( arg1, arg2 ) {
-          this.arg1 = arg1;
-          this.arg2 = arg2;
-        }
+  return {
+    __constructor__: function(arg1, arg2) {
+      this.arg1 = arg1;
+      this.arg2 = arg2;
+    }
+  };
+};
+
+var obj = xObject.create(ConcreteClass, [1, 2]);
+obj.arg1; // 1
+obj.arg2; // 2
+```
+
+### Mixing in properties (Object.create style)
+
+```javascript
+var obj = xObject.create({ foo: "foo" }, { bar: "bar" });
+// or: xObject.create(MyClass, [], { foo: "foo" })
+obj.foo; // "foo"
+obj.bar; // "bar"
+```
+
+### Using __mixin__ (multiple inheritance)
+
+```javascript
+var MixinA = { propertyA: "propertyA" },
+    MixinB = { propertyB: "propertyB" },
+    Silo = function() {
+      return {
+        __mixin__: [MixinA, MixinB],
+        ownProperty: "Own property"
+      };
     };
-  };
 
-  var obj = xObject.create( ConcreteClass, [ 1, 2 ] );
-  assert.strictEqual( obj.arg1, 1 );
-  assert.strictEqual( obj.arg2, 2 );
+var obj = xObject.create(Silo);
+obj.ownProperty; // "Own property"
+obj.propertyA;   // "propertyA"
+obj.propertyB;   // "propertyB"
 ```
 
-### Importing properties in Object.create way
+### Using __implements__ (interface validation)
 
 ```javascript
-var ConcreteClass = function() {};
-var obj = xObject.create( ConcreteClass, { foo : 'foo' } );
-// or xObject.create( ConcreteClass, [], { foo : 'foo' } );
-assert.strictEqual( obj.foo, 'foo' );
+var InjectedDependency = function() { return {}; },
+
+    ConcreteInterface = {
+      requiredMethod: ["string", InjectedDependency]
+    },
+
+    StrictModule = function() {
+      return {
+        __implements__: ConcreteInterface,
+        requiredMethod: function() {}
+      };
+    };
+
+var dependency = xObject.create(InjectedDependency),
+    module     = xObject.create(StrictModule);
+
+module.requiredMethod("a string", dependency); // OK
+module.requiredMethod(555, dependency);        // TypeError
+module.requiredMethod("a string", {});         // TypeError
 ```
 
-### Using __mixin__ pseudo-property
-
-```javascript
-var MixinA = {
-    propertyA: "propertyA"
-};
-MixinB = {
-    propertyB: "propertyB"
-};
-Silo = function() {
-    return {
-        __mixin__: [ MixinA, MixinB ],
-        ownPropery: "Own property"
-    }
-};
-
-var obj = xObject.create( Silo );
-assert.strictEqual( o.ownPropery, "Own property" );
-assert.strictEqual( o.propertyA, "propertyA" );
-assert.strictEqual( o.propertyB, "propertyB" );
-```
-
-
-### Using __implements__ pseudo-property
-
-```javascript
-
-
-var InjectedDependency = function() {
-  return {
-  };
-},
-
-ConcreteInterface = {
-  requeriedMethod : ["string", InjectedDependency]
-},
-
-StrictModule = function() {
-  return {
-    __implements__: ConcreteInterface,
-    requeriedMethod : function() {
-    }
-  }
-};
-
-var dependency = xObject.create( InjectedDependency ),
-    module = xObject( StrictModule );
-
-assert.ok( dependency instanceof InjectedDependency );
-module.requeriedMethod("a string", dependency); // OK
-module.requeriedMethod(555, dependency); // throws a TypeError exception
-module.requeriedMethod("a string", {}); // throws a TypeError exception
-
-```
-
-
+Allowed type hint strings: `"string"`, `"number"`, `"boolean"`, `"function"`, `"array"`. You can also pass a constructor function to require an `instanceof` match.
 
 ### Design by Contract
 
 ```javascript
 var ConcreteContract = {
-    aMethod : {
-        onEntry: [ "number"],
-        validators: [function(arg){
-            return arg > 10;
-        }],
-        onExit: "string"
-    }
-},
-EmployedModule = function() {
-    return {
+      aMethod: {
+        onEntry:    ["number"],
+        validators: [function(arg) { return arg > 10; }],
+        onExit:     "string"
+      }
+    },
+    EmployedModule = function() {
+      return {
         __contract__: ConcreteContract,
-        aMethod : function() {
-            return "a string";
-        }
-    }
-};
-var module = EmployedModule.createInstance();
-module.aMethod( 50 ); // OK
-module.aMethod( 1 ); // validator fails, RangeError exception is thrown
+        aMethod: function() { return "a string"; }
+      };
+    };
 
+var module = xObject.create(EmployedModule);
+module.aMethod(50); // OK
+module.aMethod(1);  // RangeError (validator fails)
+module.aMethod("x"); // TypeError (onEntry type mismatch)
 ```
+
+Contract properties:
+
+| Key | Type | Description |
+|---|---|---|
+| `onEntry` | `Array` | Type hints for each argument |
+| `validators` | `Array<Function>` | Per-argument predicate functions; throw `RangeError` on failure |
+| `onExit` | `string` | Type hint for the return value |
+
+Shorthand form `["string", MyClass]` is equivalent to `{ onEntry: ["string", MyClass] }`.
 
 ### Extending WidgetAbstract
 
-YUI provides a [sophisticated solution](http://yuilibrary.com/yui/docs/widget/) for keeping Widget objects consistent. xObject borrowed the concepts of base xObject.WidgetAbstract type from which all the Widget objects derived.
+Derived from YUI's widget pattern. When `xObject.create` instantiates a `WidgetAbstract` subclass it:
 
-A Widget object extending xObject.WidgetAbstract may any of following members:
-﻿
-* HTML_PARSER - object literal mapping this.node properties to supplied selectors. E.g { title: "#title" } obtains reference to a node of id "title" (in the context of boundingBox) and exposes it in this.node.title.
-* renderUi - method responsible for creating and adding the nodes which the widget needs into the document
-* bindUi - method responsible for attaching event listeners which bind the UI to the widget state.
-* syncUI - method responsible for setting the initial state of the UI based on the current state of the widget at the time of rendering.
-
-When xObject.create instantiates a derivative of  xObject.WidgetAbstract it populates node property with node references given in HTML_PARSER and call init, renderUi, bindUi and syncUi methods when any available.
+1. Resolves `HTML_PARSER` selectors against `boundingBox` and stores them in `this.node`
+2. Calls `init → renderUi → bindUi → syncUi` in order (only methods that exist)
 
 ```javascript
-(function( $, xObject ) {
-    "use strict";
-    //  Concrete widget
-    Intro = function() {
-      return {
-        __extends__ : xObject.WidgetAbstract,
-        HTML_PARSER : {
-          toolbar : 'div.toolbar'
-        },
-        bindUI : function() {
-          this.node.toolbar.find( 'li' ).bind( 'click.intro', $.proxy( this.onClickHandler, this) );
-        },
-        onClickHandler: function( e ) {
-            this.node.boundingBox.attr( 'data-pattern', $( e.target ).data( 'id' ) );
-        }
-      };
+(function($, xObject) {
+  "use strict";
+
+  var Intro = function() {
+    return {
+      __extends__: xObject.WidgetAbstract,
+      HTML_PARSER: {
+        toolbar: "div.toolbar"
+      },
+      bindUi: function() {
+        this.node.toolbar.find("li").on("click.intro", $.proxy(this.onClickHandler, this));
+      },
+      onClickHandler: function(e) {
+        this.node.boundingBox.attr("data-pattern", $(e.target).data("id"));
+      }
     };
-    // Document is ready
-    $(document).bind( 'ready.app', function(){t
-      xObject.create( Intro, { boundingBox: "#intro" } );
-    });
+  };
 
-})( jQuery, xObject );
+  $(document).on("ready.app", function() {
+    xObject.create(Intro, { boundingBox: "#intro" });
+  });
 
+}(jQuery, xObject));
 ```
 
-*Note:*  AbstractWidget obtain nodes from DOM by supplied selector strings by using xObject.querySelectorFn( selector[, context] ) function, which you can override.
-When it's not overridden, by default it will rely on VanillaJS querySelector method, but if jQuery available in the global scope it will switch to $().
+By default `xObject.querySelectorFn` uses `document.querySelector`, or jQuery if it is available in the global scope. Override it to use any other selector engine:
 
-[![Analytics](https://ga-beacon.appspot.com/UA-1150677-13/dsheiko/xObject)](http://githalytics.com/dsheiko/xObject)
+```javascript
+xObject.querySelectorFn = function(selector, context) {
+  return (context || document).querySelector(selector);
+};
+```
+
+## License
+
+MIT
