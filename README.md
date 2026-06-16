@@ -4,9 +4,7 @@
 
 [![NPM](https://nodei.co/npm/xobject.png)](https://nodei.co/npm/xobject/)
 
-> A lightweight hookable factory providing control over object instantiation.
-
-xObject lets you use the "constructor that returns an object literal" pattern while still getting proper class-based inheritance, mixins, interface validation, and design-by-contract support.
+A lightweight hookable factory for JavaScript that turns plain object-literal constructors into a full OOP toolkit: class-based inheritance, mixins, runtime interface validation, and design-by-contract support — all in ES5, zero dependencies.
 
 ## Install
 
@@ -14,208 +12,272 @@ xObject lets you use the "constructor that returns an object literal" pattern wh
 npm install xobject
 ```
 
+**Browser** — load the core plus any plugins you need:
+
+```html
+<script src="js/source/xObject.core.js"></script>
+<script src="js/source/xObject.mixin.js"></script>
+<script src="js/source/xObject.interface.js"></script>
+<script src="js/source/xObject.dbc.js"></script>
+<script src="js/source/xObject.widget.js"></script>
+```
+
+Or use the pre-built bundles from `js/build/` (see `npm run build`).
+
+## Quick Start
+
+```javascript
+var Animal = function() {
+  return {
+    speak: function() { return "..."; }
+  };
+};
+
+var Dog = function() {
+  return { __extends__: Animal };
+};
+
+var rex = xObject.create(Dog);
+rex instanceof Dog;    // true
+rex instanceof Animal; // true
+rex.speak();           // "..."
+```
+
 ## Features
 
-- **Core** — single-level and multi-level prototype inheritance
-- **Mixin** — multiple inheritance via `__mixin__`
-- **Interface** — runtime method signature validation via `__implements__`
-- **DbC** — design by contract (entry/exit type hints + validators) via `__contract__`
-- **Widget** — YUI-style lifecycle (`init → renderUi → bindUi → syncUi`) via `__extends__: xObject.WidgetAbstract`
+| Plugin | File | Pseudo-property | Purpose |
+|---|---|---|---|
+| Core | `xObject.core.js` | `__extends__` | Single and multi-level prototype inheritance |
+| Core | `xObject.core.js` | `__constructor__` | Post-setup initializer called with the original args |
+| Mixin | `xObject.mixin.js` | `__mixin__` | Multiple inheritance — copy any number of trait objects |
+| Interface | `xObject.interface.js` | `__implements__` | Runtime method signature validation |
+| DbC | `xObject.dbc.js` | `__contract__` | Entry/exit type hints and per-argument validators |
+| Widget | `xObject.widget.js` | *(via `__extends__`)* | YUI-style lifecycle: `init → renderUi → bindUi → syncUi` |
 
-![UML](https://github.com/dsheiko/xObject/raw/master/doc/uml-overview.png)
+![UML overview](doc/uml-overview.png)
 
-## Scripts
+## API
+
+### xObject.create()
 
 ```
-npm test        # run Jest test suite
-npm run build   # produce minified bundles in js/build/
+xObject.create( constructor )
+xObject.create( constructor, argsArray )
+xObject.create( constructor, propsObject )
+xObject.create( constructor, argsArray, propsObject )
+xObject.create( protoObject )
+xObject.create( protoObject, propsObject )
 ```
+
+- **constructor** — a function that returns a plain object literal. Receives `argsArray` as its arguments.
+- **protoObject** — a plain object used directly as the prototype (Object.create style).
+- **argsArray** — array of arguments forwarded to the constructor and to `__constructor__`.
+- **propsObject** — extra properties mixed into the instance after construction (useful for passing settings like `boundingBox`).
+
+Returns an instance whose prototype chain reflects all `__extends__` declarations, with plugin hooks applied.
 
 ## Examples
 
-### Class-based descending inheritance
+### Inheritance
 
 ```javascript
 var AbstractClass = function() {
-      return {
-        foo: "value"
-      };
-    },
-    ConcreteClass = function() {
-      var _privateMember = "private member";
-      return {
-        __extends__: AbstractClass,
-        publicMember: "public member",
-        privilegedMethod: function() {
-          return _privateMember;
-        }
-      };
-    };
+  return {
+    foo: "value"
+  };
+};
+
+var ConcreteClass = function() {
+  var _private = "private member";
+  return {
+    __extends__: AbstractClass,
+    publicMember: "public member",
+    privileged: function() { return _private; }
+  };
+};
 
 var obj = xObject.create(ConcreteClass);
 obj instanceof ConcreteClass; // true
 obj instanceof AbstractClass; // true
+obj.foo;        // "value"   (inherited)
+obj.privileged(); // "private member"
 ```
 
-### Passing arguments to the constructor
+### Constructor arguments
 
 ```javascript
-var ConcreteClass = function(arg1, arg2) {
-  var _arg1 = arg1,
-      _arg2 = arg2;
+var Point = function(x, y) {
   return {
-    getArg1: function() { return _arg1; },
-    getArg2: function() { return _arg2; }
+    getX: function() { return x; },
+    getY: function() { return y; }
   };
 };
 
-var obj = xObject.create(ConcreteClass, [1, 2]);
-obj.getArg1(); // 1
-obj.getArg2(); // 2
+var p = xObject.create(Point, [10, 20]);
+p.getX(); // 10
+p.getY(); // 20
 ```
 
-### Using __constructor__ pseudo-method
+### `__constructor__` pseudo-method
+
+Use when you need `this` to set own properties after the prototype chain is built:
 
 ```javascript
-var ConcreteClass = function() {
+var Model = function() {
   return {
-    __constructor__: function(arg1, arg2) {
-      this.arg1 = arg1;
-      this.arg2 = arg2;
+    __constructor__: function(data) {
+      this.id   = data.id;
+      this.name = data.name;
     }
   };
 };
 
-var obj = xObject.create(ConcreteClass, [1, 2]);
-obj.arg1; // 1
-obj.arg2; // 2
+var m = xObject.create(Model, [{ id: 1, name: "Alice" }]);
+m.id;   // 1
+m.name; // "Alice"
 ```
 
-### Mixing in properties (Object.create style)
+### Mixing in properties
+
+Pass a plain object as the second argument to merge extra properties (same as `Object.create` style):
 
 ```javascript
 var obj = xObject.create({ foo: "foo" }, { bar: "bar" });
-// or: xObject.create(MyClass, [], { foo: "foo" })
 obj.foo; // "foo"
 obj.bar; // "bar"
+
+// equivalent with a constructor:
+xObject.create(MyClass, [], { boundingBox: "#app" });
 ```
 
-### Using __mixin__ (multiple inheritance)
+### Mixins
 
 ```javascript
-var MixinA = { propertyA: "propertyA" },
-    MixinB = { propertyB: "propertyB" },
-    Silo = function() {
-      return {
-        __mixin__: [MixinA, MixinB],
-        ownProperty: "Own property"
-      };
-    };
+var Serializable = { serialize: function() { return JSON.stringify(this); } };
+var Validatable  = { validate:  function() { return !!this.id; } };
 
-var obj = xObject.create(Silo);
-obj.ownProperty; // "Own property"
-obj.propertyA;   // "propertyA"
-obj.propertyB;   // "propertyB"
+var Model = function() {
+  return {
+    __mixin__: [Serializable, Validatable],
+    id: null
+  };
+};
+
+var m = xObject.create(Model);
+m.serialize(); // "{\"id\":null}"
+m.validate();  // false
 ```
 
-### Using __implements__ (interface validation)
+### Interface validation
+
+Declare method signatures as an interface object; xObject wraps each method to enforce types at call time.
 
 ```javascript
-var InjectedDependency = function() { return {}; },
+var ILogger = {
+  log: ["string"]
+};
 
-    ConcreteInterface = {
-      requiredMethod: ["string", InjectedDependency]
-    },
+var ConsoleLogger = function() {
+  return {
+    __implements__: ILogger,
+    log: function(msg) { console.log(msg); }
+  };
+};
 
-    StrictModule = function() {
-      return {
-        __implements__: ConcreteInterface,
-        requiredMethod: function() {}
-      };
-    };
-
-var dependency = xObject.create(InjectedDependency),
-    module     = xObject.create(StrictModule);
-
-module.requiredMethod("a string", dependency); // OK
-module.requiredMethod(555, dependency);        // TypeError
-module.requiredMethod("a string", {});         // TypeError
+var logger = xObject.create(ConsoleLogger);
+logger.log("hello");  // OK
+logger.log(42);       // TypeError
 ```
 
-Allowed type hint strings: `"string"`, `"number"`, `"boolean"`, `"function"`, `"array"`. You can also pass a constructor function to require an `instanceof` match.
+**Type hint values:** `"string"`, `"number"`, `"boolean"`, `"function"`, `"array"`, or a constructor function (checked with `instanceof`).
+
+```javascript
+var IService = {
+  process: ["string", MyDependency]
+};
+```
 
 ### Design by Contract
 
 ```javascript
-var ConcreteContract = {
-      aMethod: {
-        onEntry:    ["number"],
-        validators: [function(arg) { return arg > 10; }],
-        onExit:     "string"
-      }
-    },
-    EmployedModule = function() {
-      return {
-        __contract__: ConcreteContract,
-        aMethod: function() { return "a string"; }
-      };
-    };
+var ITemperatureService = {
+  convert: {
+    onEntry:    ["number"],
+    validators: [function(celsius) { return celsius >= -273.15; }],
+    onExit:     "number"
+  }
+};
 
-var module = xObject.create(EmployedModule);
-module.aMethod(50); // OK
-module.aMethod(1);  // RangeError (validator fails)
-module.aMethod("x"); // TypeError (onEntry type mismatch)
+var TemperatureService = function() {
+  return {
+    __contract__: ITemperatureService,
+    convert: function(celsius) { return celsius * 9 / 5 + 32; }
+  };
+};
+
+var svc = xObject.create(TemperatureService);
+svc.convert(100);    // 212
+svc.convert(-300);   // RangeError  (below absolute zero)
+svc.convert("100");  // TypeError   (onEntry mismatch)
 ```
 
-Contract properties:
+**Contract shape:**
 
 | Key | Type | Description |
 |---|---|---|
-| `onEntry` | `Array` | Type hints for each argument |
-| `validators` | `Array<Function>` | Per-argument predicate functions; throw `RangeError` on failure |
+| `onEntry` | `Array` | Type hint per argument (same values as interface hints) |
+| `validators` | `Array<Function>` | Per-argument predicates; `false` throws `RangeError` |
 | `onExit` | `string` | Type hint for the return value |
 
-Shorthand form `["string", MyClass]` is equivalent to `{ onEntry: ["string", MyClass] }`.
+Shorthand `["number", MyClass]` is equivalent to `{ onEntry: ["number", MyClass] }`.
 
-### Extending WidgetAbstract
-
-Derived from YUI's widget pattern. When `xObject.create` instantiates a `WidgetAbstract` subclass it:
-
-1. Resolves `HTML_PARSER` selectors against `boundingBox` and stores them in `this.node`
-2. Calls `init → renderUi → bindUi → syncUi` in order (only methods that exist)
+### Widget lifecycle
 
 ```javascript
 (function($, xObject) {
   "use strict";
 
-  var Intro = function() {
+  var Toolbar = function() {
     return {
       __extends__: xObject.WidgetAbstract,
       HTML_PARSER: {
-        toolbar: "div.toolbar"
+        buttons: "ul.buttons"
       },
       bindUi: function() {
-        this.node.toolbar.find("li").on("click.intro", $.proxy(this.onClickHandler, this));
+        this.node.buttons.find("li").on("click", $.proxy(this.onSelect, this));
       },
-      onClickHandler: function(e) {
-        this.node.boundingBox.attr("data-pattern", $(e.target).data("id"));
+      onSelect: function(e) {
+        this.node.boundingBox.attr("data-selected", $(e.target).data("id"));
       }
     };
   };
 
   $(document).on("ready.app", function() {
-    xObject.create(Intro, { boundingBox: "#intro" });
+    xObject.create(Toolbar, { boundingBox: "#toolbar" });
   });
 
 }(jQuery, xObject));
 ```
 
-By default `xObject.querySelectorFn` uses `document.querySelector`, or jQuery if it is available in the global scope. Override it to use any other selector engine:
+When `xObject.create` instantiates a `WidgetAbstract` subclass it:
+
+1. Requires `boundingBox` in the props (throws `TypeError` if missing).
+2. Resolves each `HTML_PARSER` selector against `boundingBox` and stores the result in `this.node`.
+3. Calls `init`, `renderUi`, `bindUi`, `syncUi` in order (skips any that are not defined).
+
+By default `xObject.querySelectorFn` falls back to `document.querySelector`, or jQuery if present globally. Override it for any other selector engine:
 
 ```javascript
 xObject.querySelectorFn = function(selector, context) {
   return (context || document).querySelector(selector);
 };
+```
+
+## Development
+
+```
+npm test        # Jest test suite (24 tests)
+npm run build   # minified bundles → js/build/
 ```
 
 ## License
